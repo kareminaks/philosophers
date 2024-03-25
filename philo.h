@@ -4,9 +4,10 @@
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
+#include <pthread.h>
 
 
-char * parse_input(int * inp, int argc, char *argv[]);
+void parse_input(int * inp, int argc, char *argv[]);
 int ft_atoi(char * a );
 
 

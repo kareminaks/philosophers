@@ -1,6 +1,6 @@
 #include "philo.h"
 
-char * parse_input(int * inp, int argc, char *argv[])
+void parse_input(int * inp, int argc, char *argv[])
 {
     int n = 0;
     if (argc < 5)
@@ -18,7 +18,31 @@ char * parse_input(int * inp, int argc, char *argv[])
             inp[n]= ft_atoi(argv[n]);
             n++;
         }}
-        return 0;
+}
+
+void* philo_routine(void * arg)
+{(void)arg;
+    printf("new philo has joined the table\n");
+    return NULL;
+}
+
+void create_philo(int philo_count)
+{
+    pthread_t *threads = malloc(philo_count * sizeof(pthread_t));
+    int i = 0;
+    while(i < philo_count)
+    {
+    if (pthread_create(&threads[i], NULL, philo_routine, NULL) != 0) {
+        printf("Failed to create thread");
+    }
+    i++;
+    printf("Thread %d has started\n", i);}
+    for (i = 0; i < philo_count; i++) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            printf("error joining");
+        }
+        printf("Thread %d has finished execution\n", i);
+    }
 }
 
 int ft_atoi(char * a )
@@ -36,12 +60,9 @@ int ft_atoi(char * a )
 int main(int argc, char *argv[])
 {
     int inp[5];
-    int i=0;
     parse_input(inp,argc-1,&argv[1]);
-   while (i<5)
-   {printf("%d ",inp[i]);
-   i++;
-   }
+    int philo_count= inp[0];
+    create_philo(philo_count);
     return (0);
 }
 
