@@ -1,9 +1,13 @@
 #include "philo.h"
 
+#define NO_VALUE -1
+
 void parse_input(int * inp, int argc, char *argv[])
 {
     int n = 0;
-    if ((argc != 5) && (argc! =6))
+    inp[4] = NO_VALUE;
+
+    if ((argc != 5) && (argc !=6))
         {printf ("Invalid amount of input data, try again\n");
         exit(0);}
     else
@@ -34,19 +38,46 @@ void check_input(int * inp)
 
 }
 void* philo_routine(void * arg)
-{(void)arg;
-    printf("new philo has joined the table\n");
+{
+    t_philo *philo = arg;
+
+
+    printf("ruunning philo: id=%d tte=%d ttd=%d tts=%d\n", 
+        philo->id, (int)(philo->time_to_eat),(int)(philo->time_to_die), (int)(philo->time_to_sleep));
     return NULL;
 }
 
-void create_philo(int philo_count)
+size_t time_now() {
+    return 0;
+}
+
+t_philo * fill_philo(int id,int * inp)
+{
+    t_philo *philo = malloc(sizeof(t_philo));
+    philo->id = id;
+    philo->meals_eaten = 0;
+    philo->start_time = time_now();
+    philo->time_to_die = inp[1];
+    philo->time_to_eat = inp[2];
+    philo->time_to_sleep = inp[3];
+    philo->num_of_philos = inp[0];
+    philo->num_times_to_eat = inp[4];
+
+    return(philo);
+}
+
+
+
+void create_philo(int philo_count, int *inp)
 {
     pthread_t *threads = malloc(philo_count * sizeof(pthread_t));
     int i = 0;
+    t_philo * philo;
     while(i < philo_count)
-    {
-    if (pthread_create(&threads[i], NULL, philo_routine, NULL) != 0) {
-        printf("Failed to create thread\n");
+    {   
+        philo = fill_philo(i, inp); // TODO free philo later
+        if (pthread_create(&threads[i], NULL, philo_routine, philo) != 0) {
+            printf("Failed to create thread\n");
     }
     i++;
     printf("Thread %d has started\n", i);}
@@ -92,7 +123,8 @@ int main(int argc, char *argv[])
     parse_input(inp,argc-1,argv);
     int philo_count= inp[0];
     check_input(inp);
-    create_philo(philo_count);
+    create_philo(philo_count, inp);
+    
     return (0);
 }
 

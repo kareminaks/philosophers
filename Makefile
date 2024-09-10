@@ -6,7 +6,7 @@
 #    By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/17 14:30:39 by kseniakarem       #+#    #+#              #
-#    Updated: 2024/03/26 17:04:00 by kseniakarem      ###   ########.fr        #
+#    Updated: 2024/09/10 22:03:18 by kseniakarem      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,11 @@ fclean: clean
 re: fclean all
 
 
-test: $(NAME)
+valgrind: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(NAME) 5 100 100 100 100
+
+test: $(NAME)
+	./$(NAME) 5 100 100 100 100
 
 docker:
 	docker build -t philo .
