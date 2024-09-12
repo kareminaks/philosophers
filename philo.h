@@ -37,7 +37,7 @@ size_t	time_now(void);
 void parse_input(int * inp, int argc, char *argv[]);
 int ft_atoi(char * a );
 void* philo_routine(void * arg);
-pthread_t *create_philo(int philo_count, int *inp, t_fork *forks, t_fork *someone_died, pthread_mutex_t *writelock);
+pthread_t *create_threads(int philo_count, t_philo* philos);
 
 void report(t_philo *philo, char* action);
 

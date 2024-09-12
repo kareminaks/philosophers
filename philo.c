@@ -166,9 +166,8 @@ void* philo_routine(void * arg)
 }
 
 
-t_philo * fill_philo(int id,int * inp, t_fork *forks, t_fork *philo_died, pthread_mutex_t *write_lock)
+void fill_philo(t_philo* philo, int id,int * inp, t_fork *forks, t_fork *philo_died, pthread_mutex_t *write_lock)
 {
-    t_philo *philo = malloc(sizeof(t_philo));
     int n = inp[0];
     philo->id = id;
     philo->dead = 0;
@@ -188,7 +187,6 @@ t_philo * fill_philo(int id,int * inp, t_fork *forks, t_fork *philo_died, pthrea
         philo->left_fork = &forks[n-1];
     else 
         philo->left_fork = &forks[id-1];
-    return(philo);
 }
 
 t_fork *create_forks(int philo_count)
@@ -203,15 +201,13 @@ t_fork *create_forks(int philo_count)
     return(forks);
 }
 
-pthread_t *create_philo(int philo_count, int *inp, t_fork *forks, t_fork *philo_died, pthread_mutex_t *write_lock)
+pthread_t *create_threads(int philo_count, t_philo* philos)
 {
     pthread_t *threads = malloc(philo_count * sizeof(pthread_t));
     int i = 0;
-    t_philo * philo;
     while(i < philo_count)
     {   
-        philo = fill_philo(i, inp, forks, philo_died, write_lock); // TODO free philo later
-        if (pthread_create(&threads[i], NULL, philo_routine, philo) != 0) {
+        if (pthread_create(&threads[i], NULL, philo_routine, &philos[i]) != 0) {
             printf("Failed to create thread\n");
             exit(1);
         }
@@ -221,7 +217,7 @@ pthread_t *create_philo(int philo_count, int *inp, t_fork *forks, t_fork *philo_
     return (threads);
 }
 
-void join_philos(int philo_count, pthread_t *threads)
+void join_threads(int philo_count, pthread_t *threads)
 {
     int i = 0;
     while (i< philo_count){
@@ -283,6 +279,17 @@ size_t	time_now(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
+t_philo *init_philos(int *inp, t_fork* forks, t_fork *philo_died, pthread_mutex_t *write_lock)
+{
+    t_philo *philos = malloc(inp[0]*sizeof(t_philo));
+    int i = 0;
+    while(i < inp[0]) {
+        fill_philo(&philos[i], i, inp, forks, philo_died, write_lock);
+        i++;
+    }
+    return philos;
+}
+
 int main(int argc, char *argv[])
 {
     int inp[5];
@@ -292,9 +299,15 @@ int main(int argc, char *argv[])
     t_fork* forks =create_forks(philo_count);
     t_fork *philo_died = create_forks(1);
     pthread_mutex_t write_lock;
-    pthread_t *threads =create_philo(philo_count, inp, forks, philo_died, &write_lock);
-    join_philos( philo_count, threads);
+    pthread_mutex_init(&write_lock, NULL);
+
+    t_philo* philos = init_philos(inp, forks, philo_died, &write_lock);
+    pthread_t *threads = create_threads(philo_count, philos);
+    join_threads( philo_count, threads);
+    free(philos);
+    pthread_mutex_destroy(&write_lock);
     destroy_forks(philo_count,forks);
+    destroy_forks(1,philo_died);
     return (0);
 }
 
