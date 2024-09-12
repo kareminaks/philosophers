@@ -2,4 +2,4 @@
 *.dSYM
 *.o
 a.out
-
+*.txt
