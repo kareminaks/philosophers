@@ -69,21 +69,22 @@ void unlock_fork(t_fork* mu) {
 }
 
 void report(int id, char* action) {
-	printf("%lu %d is %s\n", time_now(), id + 1, action);
+	printf("%lu %d %s\n", time_now(), id + 1, action);
 }
 
 void thinking(t_philo *philo) {
-    report(philo->id, "thinking");
+    report(philo->id, "is thinking");
     size_t time_to_live = philo->time_to_die - philo->time_to_sleep;
     if (lock_2_forks(philo, time_to_live)) {
         return;
     }
     philo->dead = 1;
+    report(philo->id, "died");
 }
 
 void eating (t_philo *philo)
 {
-    report(philo->id, "eating");
+    report(philo->id, "is eating");
     usleep(philo->time_to_eat*1000);
     philo->meals_eaten++;
     philo->time_since_eaten = 0;
@@ -93,11 +94,13 @@ void eating (t_philo *philo)
 
 void	sleeping(t_philo *philo)
 {
-    report(philo->id, "sleeping");
+    report(philo->id, "is sleeping");
     if (philo->time_to_die<= philo->time_to_sleep)
         {
             usleep((philo->time_to_sleep - philo->time_to_die)*1000);
             philo->dead = 1;
+            report(philo->id, "dead");
+
             return;
         }
 	usleep((philo->time_to_sleep)*1000);
@@ -110,12 +113,17 @@ void* philo_routine(void * arg)
 
     printf("ruunning philo: id=%d tte=%d ttd=%d tts=%d\n", 
         philo->id, (int)(philo->time_to_eat),(int)(philo->time_to_die), (int)(philo->time_to_sleep));
-
-    while ((philo->dead!=1)&&(philo->num_times_to_eat>philo->meals_eaten))
+    if (philo->id % 2 == 0)
+		usleep(1000);
+    while ((philo->dead!=1)&&(philo->num_times_to_eat > philo->meals_eaten))
     {
         thinking(philo);
-        eating(philo);
-        sleeping(philo);
+        if ((philo->dead!=1)){
+            eating(philo);
+            sleeping(philo);
+    }
+        else
+        return NULL;
     }
     return NULL;
 }
@@ -154,11 +162,9 @@ t_fork *create_forks(int philo_count)
         i++;
     }
     return(forks);
-
-
 }
 
-void create_philo(int philo_count, int *inp, t_fork *forks)
+pthread_t *create_philo(int philo_count, int *inp, t_fork *forks)
 {
     pthread_t *threads = malloc(philo_count * sizeof(pthread_t));
     int i = 0;
@@ -173,13 +179,32 @@ void create_philo(int philo_count, int *inp, t_fork *forks)
         printf("Thread %d has started\n", i);
         i++;
     }
-    for (i = 0; i < philo_count; i++) {
+    return (threads);
+}
+
+void join_philos(int philo_count, pthread_t *threads)
+{
+    int i = 0;
+    while (i< philo_count){
         if (pthread_join(threads[i], NULL) != 0) {
             printf("error joining\n");
         }
         printf("Thread %d has finished execution\n", i);
+        i++;
     }
-    free(threads);
+    free(threads); 
+}
+
+void destroy_forks(int philo_count, t_fork *forks)
+{
+    int i = 0;
+    while (i< philo_count){
+        if (pthread_mutex_destroy(&forks[i].mu) != 0) {
+            printf("error destroying\n");
+        }
+        i++;
+    }
+    free(forks); 
 }
 
 int ft_atoi(char * a )
@@ -226,7 +251,10 @@ int main(int argc, char *argv[])
     int philo_count= inp[0];
     check_input(inp);
     t_fork* forks =create_forks(philo_count);
-    create_philo(philo_count, inp, forks);
+    pthread_t *threads =create_philo(philo_count, inp, forks);
+    join_philos( philo_count, threads);
+    destroy_forks(philo_count,forks);
+
     
     return (0);
 }
