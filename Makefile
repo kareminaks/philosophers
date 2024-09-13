@@ -6,14 +6,14 @@
 #    By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/17 14:30:39 by kseniakarem       #+#    #+#              #
-#    Updated: 2024/09/12 14:51:44 by kseniakarem      ###   ########.fr        #
+#    Updated: 2024/09/13 15:33:23 by kseniakarem      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
-SRCS = philo.c 
+SRCS = philo.c creating.c routine.c forks.c helpers.c
 OBJ = $(SRCS:.c=.o)
 
 all:$(NAME)
@@ -37,7 +37,7 @@ valgrind: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(NAME) 5 100 100 100 100
 
 test: $(NAME)
-	./$(NAME) 5 300 200 200 7 
+	./$(NAME) 4 310 200 100
 
 docker:
 	docker build -t philo .
