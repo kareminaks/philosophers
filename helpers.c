@@ -19,7 +19,7 @@ void	report(t_philo *philo, char *action)
 	time = time_now() - philo->start_time;
 	pthread_mutex_lock(philo->write_lock);
 	if (!did_someone_die(philo))
-    	printf("%lu %d %s\n", time, philo->id + 1, action);
+		printf("%lu %d %s\n", time, philo->id + 1, action);
 	pthread_mutex_unlock(philo->write_lock);
 }
 
@@ -29,7 +29,7 @@ void	report_died(t_philo *philo)
 
 	time = time_now() - philo->start_time;
 	pthread_mutex_lock(philo->write_lock);
-    printf("%lu %d died\n", time, philo->id + 1);
+	printf("%lu %d died\n", time, philo->id + 1);
 	pthread_mutex_unlock(philo->write_lock);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:15:08 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 16:14:31 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 16:25:33 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,16 @@ typedef struct s_philo
 	t_fork			*right_fork;
 }					t_philo;
 
+typedef struct s_program_state
+{
+	int				inp[5];
+	t_fork			*forks;
+	t_fork			*philo_died;
+	pthread_mutex_t	write_lock;
+	t_philo			*philos;
+	pthread_t		*threads;
+}					t_program_state;
+
 size_t				time_now(void);
 
 int					ft_atoi(char *a);
@@ -66,13 +76,11 @@ void				parse_input(int *inp, int argc, char *argv[]);
 void				check_input(int *inp);
 void				report(t_philo *philo, char *action);
 void				report_died(t_philo *philo);
-void				fill_philo(t_philo *philo, int id, int *inp, t_fork *forks,
-						t_fork *philo_died, pthread_mutex_t *write_lock);
-int				    set_someone_died(t_philo *philo);
+void				fill_philo(t_program_state *g, t_philo *philo, int id);
+int					set_someone_died(t_philo *philo);
 void				*philo_routine(void *arg);
 
-t_philo				*init_philos(int *inp, t_fork *forks, t_fork *philo_died,
-						pthread_mutex_t *write_lock);
+t_philo				*init_philos(t_program_state *g);
 t_fork				*create_forks(int philo_count);
 pthread_t			*create_threads(int philo_count, t_philo *philos);
 
