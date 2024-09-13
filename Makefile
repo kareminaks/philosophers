@@ -6,7 +6,7 @@
 #    By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/17 14:30:39 by kseniakarem       #+#    #+#              #
-#    Updated: 2024/09/13 15:33:23 by kseniakarem      ###   ########.fr        #
+#    Updated: 2024/09/13 17:15:56 by kseniakarem      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ valgrind: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(NAME) 5 100 100 100 100
 
 test: $(NAME)
-	./$(NAME) 4 310 200 100
+	./$(NAME) 5 800 200 200
 
 docker:
 	docker build -t philo .

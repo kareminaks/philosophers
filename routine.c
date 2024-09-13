@@ -6,18 +6,29 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:44:20 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 15:19:12 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 17:46:10 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	report(t_philo *philo, char *action)
+{
+	size_t	time;
+
+	time = time_now() - philo->start_time;
+	pthread_mutex_lock(philo->write_lock);
+	if (!did_someone_die(philo))
+		printf("%lu %d %s\n", time, philo->id + 1, action);
+	pthread_mutex_unlock(philo->write_lock);
+}
 
 void	thinking(t_philo *philo)
 {
 	size_t	time_to_live;
 
 	report(philo, "is thinking");
-	time_to_live = philo->time_to_die - philo->time_to_sleep;
+	time_to_live = philo->time_to_die - philo->time_since_eaten;
 	if (lock_2_forks(philo, time_to_live))
 	{
 		return ;

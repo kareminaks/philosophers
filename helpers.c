@@ -6,22 +6,11 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:50:33 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 16:15:03 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 16:42:13 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	report(t_philo *philo, char *action)
-{
-	size_t	time;
-
-	time = time_now() - philo->start_time;
-	pthread_mutex_lock(philo->write_lock);
-	if (!did_someone_die(philo))
-		printf("%lu %d %s\n", time, philo->id + 1, action);
-	pthread_mutex_unlock(philo->write_lock);
-}
 
 void	report_died(t_philo *philo)
 {
@@ -56,10 +45,7 @@ int	ft_atoi(char *a)
 			i++;
 		}
 		else
-		{
-			printf("only numbers in input,please\n");
 			exit(0);
-		}
 	}
 	return (res * sign);
 }

@@ -6,7 +6,7 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:41:53 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 16:25:14 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 17:45:37 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	fill_philo(t_program_state *g, t_philo *philo, int id)
 	philo->dead = 0;
 	philo->meals_eaten = 0;
 	philo->start_time = time_now();
-	philo->time_since_eaten = time_now();
+	philo->time_since_eaten = 0;
 	philo->time_to_die = g->inp[1];
 	philo->time_to_eat = g->inp[2];
 	philo->time_to_sleep = g->inp[3];

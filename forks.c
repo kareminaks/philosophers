@@ -6,40 +6,49 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:57:36 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 15:16:37 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 17:48:31 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	sleep_until(size_t until_ms)
+{
+	size_t	now;
+
+	now = time_now();
+	if (until_ms < now)
+		return ;
+	usleep((until_ms - now) * 1000);
+}
+
 int	lock_2_forks(t_philo *philo, size_t max_ms)
 {
-	size_t	start;
 	size_t	end;
-	t_fork	*left;
-	t_fork	*right;
 
-	start = time_now();
-	end = start + max_ms;
-	left = philo->left_fork;
-	right = philo->right_fork;
+	end = time_now() + max_ms;
+	if (philo->left_fork == philo->right_fork)
+	{
+		sleep_until(end);
+		return (0);
+	}
 	while (time_now() < end)
 	{
-		pthread_mutex_lock(&left->mu);
-		pthread_mutex_lock(&right->mu);
-		if (left->locked == 0 && right->locked == 0)
+		usleep(100);
+		pthread_mutex_lock(&philo->left_fork->mu);
+		pthread_mutex_lock(&philo->right_fork->mu);
+		if (philo->left_fork->locked == 0 && philo->right_fork->locked == 0)
 		{
-			left->locked = 1;
+			philo->left_fork->locked = 1;
+			philo->right_fork->locked = 1;
+			pthread_mutex_unlock(&philo->left_fork->mu);
+			pthread_mutex_unlock(&philo->right_fork->mu);
 			report(philo, "has taken a fork");
-			right->locked = 1;
 			report(philo, "has taken a fork");
-			pthread_mutex_unlock(&left->mu);
-			pthread_mutex_unlock(&right->mu);
 			return (1);
 		}
-		pthread_mutex_unlock(&left->mu);
-		pthread_mutex_unlock(&right->mu);
-		usleep(1000);
+		pthread_mutex_unlock(&philo->left_fork->mu);
+		pthread_mutex_unlock(&philo->right_fork->mu);
 	}
 	return (0);
 }

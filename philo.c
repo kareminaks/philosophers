@@ -6,7 +6,7 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:52:12 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 16:20:00 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 16:51:27 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	main(int argc, char *argv[])
 	g.forks = create_forks(g.inp[0]);
 	g.philo_died = create_forks(1);
 	pthread_mutex_init(&g.write_lock, NULL);
-	g.philos = init_philos(g.inp, g.forks, g.philo_died, &g.write_lock);
+	g.philos = init_philos(&g);
 	g.threads = create_threads(g.inp[0], g.philos);
 	join_threads(g.inp[0], g.threads);
 	free(g.philos);
