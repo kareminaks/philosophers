@@ -37,7 +37,7 @@ valgrind: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(NAME) 5 100 100 100 100
 
 test: $(NAME)
-	./$(NAME) 4 310 200 100
+	./$(NAME) 4 310 200 100 
 
 docker:
 	docker build -t philo .

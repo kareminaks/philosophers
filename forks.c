@@ -32,9 +32,10 @@ int	lock_2_forks(t_philo *philo, size_t max_ms)
 {
 	size_t	end;
 
+	usleep(500);
 	end = time_now() + max_ms;
 	if (philo->left_fork == philo->right_fork)
-		return kek(end);
+		return (kek(end));
 	while (time_now() < end)
 	{
 		usleep(100);
