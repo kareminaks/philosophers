@@ -6,7 +6,7 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:57:36 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 17:48:31 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/14 15:43:52 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,19 @@ void	sleep_until(size_t until_ms)
 	usleep((until_ms - now) * 1000);
 }
 
+int	kek(size_t u)
+{
+	sleep_until(u);
+	return (0);
+}
+
 int	lock_2_forks(t_philo *philo, size_t max_ms)
 {
 	size_t	end;
 
 	end = time_now() + max_ms;
 	if (philo->left_fork == philo->right_fork)
-	{
-		sleep_until(end);
-		return (0);
-	}
+		return kek(end);
 	while (time_now() < end)
 	{
 		usleep(100);

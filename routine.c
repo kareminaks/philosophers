@@ -6,7 +6,7 @@
 /*   By: kseniakaremina <kseniakaremina@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:44:20 by kseniakarem       #+#    #+#             */
-/*   Updated: 2024/09/13 17:46:10 by kseniakarem      ###   ########.fr       */
+/*   Updated: 2024/09/13 18:05:03 by kseniakarem      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,10 @@ void	thinking(t_philo *philo)
 void	eating(t_philo *philo)
 {
 	report(philo, "is eating");
+	philo->time_since_eaten = 0;
 	usleep(philo->time_to_eat * 1000);
 	philo->meals_eaten++;
-	philo->time_since_eaten = 0;
+	philo->time_since_eaten = philo->time_to_eat;
 	unlock_fork(philo->left_fork);
 	unlock_fork(philo->right_fork);
 }
@@ -58,7 +59,7 @@ void	sleeping(t_philo *philo)
 		return ;
 	}
 	usleep((philo->time_to_sleep) * 1000);
-	philo->time_since_eaten = philo->time_to_sleep;
+	philo->time_since_eaten += philo->time_to_sleep;
 }
 
 void	*philo_routine(void *arg)
